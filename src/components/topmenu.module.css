@@ -1,0 +1,49 @@
+.menucontainer {
+  height: 50px;
+  background-color: #2d336b;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 30;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 12px;
+}
+.logoimg {
+  height: 100%;
+  width: auto;
+}
+.itemcontainer {
+  width: 120px;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10pt;
+  color: #fff2f2;
+}
+
+.dropdownprofile {
+  position: absolute;
+  top: 4.5rem;
+  right: 1.5rem;
+  width: 150px;
+  padding: 15px;
+  border-radius: 15px;
+  background-color: white;
+  border: 1px solid gray;
+}
+
+.dropdownprofile::before {
+  content: "";
+  position: absolute;
+  top: -1rem;
+  right: 2rem;
+  width: 25px;
+  height: 25px;
+  transform: rotate(45deg);
+  background-color: white;
+  border-left: 1px solid grey;
+  border-top: 1px solid gray;
+}

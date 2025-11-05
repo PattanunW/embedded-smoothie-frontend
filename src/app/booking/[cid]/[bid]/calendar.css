@@ -1,0 +1,39 @@
+.react-calendar {
+  font-family: "Roboto Mono", monospace;
+  width: 100% !important;
+  max-width: 445px !important;
+  height: auto !important;
+  font-size: 1rem;
+}
+
+.react-calendar__tile {
+  font-family: "Roboto Mono", monospace;
+  height: 60px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* วันใน header (Sun, Mon, ...) */
+.react-calendar__month-view__weekdays {
+  font-family: "Roboto Mono", monospace;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* เส้นใต้สีแดงสำหรับวันไม่ว่าง */
+.react-calendar__tile.red-underline abbr {
+  border-bottom: 3px solid red;
+  padding-bottom: 2px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* เส้นใต้สีเขียวสำหรับวันเช่าก่อนหน้า */
+.react-calendar__tile.green-underline abbr {
+  border-bottom: 3px solid green;
+  padding-bottom: 2px;
+  font-weight: 600;
+  line-height: 1.2;
+}
