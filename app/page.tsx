@@ -1,9 +1,7 @@
 import ButtonsMain from "@/components/ButtonsMain";
-import CarCatalogMain from "@/components/CarCatalogMain";
+import PlantCatalogMain from "@/components/CarCatalogMain";
 import HeadSection from "@/components/HeadSection";
-import ProviderCatalogMain from "@/components/ProviderCatalogMain";
-import getCars from "@/libs/getCars";
-import getProviders from "@/libs/getProviders";
+import getPlants from "@/libs/getCars";
 import { LinearProgress } from "@mui/material";
 import { revalidateTag } from "next/cache";
 import Link from "next/link";
@@ -11,8 +9,7 @@ import { Suspense } from "react";
 import Footer from "@/components/Footer";
 
 export default async function Home() {
-  const cars = await getCars();
-  const providers = await getProviders();
+  const plants = await getPlants();
   revalidateTag("providers");
 
   return (
@@ -27,7 +24,7 @@ export default async function Home() {
             </p>
           }
         >
-          <CarCatalogMain carJson={cars} />
+          <PlantCatalogMain plantJson={plants} />
         </Suspense>
       </div>
 
@@ -54,7 +51,6 @@ export default async function Home() {
             </p>
           }
         >
-          <ProviderCatalogMain providerJson={providers} />
         </Suspense>
       </div>
     </main>
