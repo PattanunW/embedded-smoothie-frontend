@@ -24,7 +24,7 @@ export default async function Home() {
             </p>
           }
         >
-          <PlantCatalogMain plantJson={plants} />
+          <PlantCatalogMain carJson={plants} />
         </Suspense>
       </div>
 
