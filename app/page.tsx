@@ -9,8 +9,14 @@ import { Suspense } from "react";
 import Footer from "@/components/Footer";
 
 export default async function Home() {
-  const plants = await getPlants();
+  const plantsData = await getPlants();
   revalidateTag("providers");
+
+  // Construct CarJson object if getPlants returns an array
+  const carJson = {
+    success: true,
+    data: plantsData,
+  };
 
   return (
     <main className="bg-white min-h-screen">
@@ -24,7 +30,7 @@ export default async function Home() {
             </p>
           }
         >
-          <PlantCatalogMain carJson={plants} />
+          <PlantCatalogMain carJson={carJson} />
         </Suspense>
       </div>
 
