@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { ref, onValue, set } from "firebase/database";
-import { getFirebaseDb } from "./firebaseClient";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
 export type FarmData = {
   hum: number | null;
@@ -26,35 +27,71 @@ const initialData: FarmData = {
   pumpOn: false,
 };
 
+async function fetchFarmStatus(): Promise<FarmData> {
+  const res = await fetch(`${API_BASE_URL}/api/status`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch farm status");
+  }
+
+  return res.json();
+}
+
+async function sendPumpCommand(command: "on" | "off") {
+  const res = await fetch(`${API_BASE_URL}/api/pump`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ command }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to control pump");
+  }
+
+  return res.json();
+}
+
 export function useFarmData() {
   const [data, setData] = useState<FarmData>(initialData);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const db = getFirebaseDb();
-    const dbRef = ref(db, "farm/latest"); // path เดิมจาก index.html
-
-    const unsub = onValue(dbRef, (snapshot) => {
-      const raw = snapshot.val() || {};
-      setData((prev) => ({
-        ...prev,
-        hum: raw.hum ?? null,
-        temp: raw.temp ?? null,
-        light: raw.light ?? null,
-        soil: raw.soil ?? null,
-        rain: raw.rain ?? null,
-        uv: raw.uv ?? null,
-        alertOn: !!raw.alertOn,
-        pumpOn: !!raw.pumpOn,
-      }));
-    });
-
-    return () => unsub();
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const status = await fetchFarmStatus();
+      setData(status);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Cannot fetch farm status from backend");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const togglePump = useCallback(() => {
-    const db = getFirebaseDb();
-    set(ref(db, "farm/latest/pumpOn"), !data.pumpOn);
-  }, [data.pumpOn]);
+  useEffect(() => {
+    loadData();
 
-  return { data, togglePump };
+    const interval = setInterval(() => {
+      loadData();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [loadData]);
+
+  const togglePump = useCallback(async () => {
+    try {
+      const newCommand = data.pumpOn ? "off" : "on";
+      await sendPumpCommand(newCommand);
+      await loadData();
+    } catch (err) {
+      console.error(err);
+      setError("Failed to toggle pump");
+    }
+  }, [data.pumpOn, loadData]);
+
+  return { data, loading, error, togglePump };
 }

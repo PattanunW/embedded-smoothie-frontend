@@ -3,7 +3,7 @@
 import { useFarmData } from "@/libs/useFarmData";
 
 export default function HomePage() {
-  const { data, togglePump } = useFarmData();
+  const { data, loading, error, togglePump } = useFarmData();
 
   return (
     <>
@@ -20,6 +20,16 @@ export default function HomePage() {
       </nav>
 
       <div className="main-content">
+        {loading && (
+          <div style={{ color: "#555", marginBottom: "10px" }}>
+            กำลังโหลดข้อมูลจากระบบ...
+          </div>
+        )}
+        {!loading && error && (
+          <div style={{ color: "#c0392b", marginBottom: "10px" }}>
+            {error}
+          </div>
+        )}
         <div className="status-container">
           <div className="glass-card">
             <i className="fas fa-tint icon-water"></i>
