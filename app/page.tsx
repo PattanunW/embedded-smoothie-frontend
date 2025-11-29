@@ -1,64 +1,129 @@
-import ButtonsMain from "@/components/ButtonsMain";
-import PlantCatalogMain from "@/components/CarCatalogMain";
-import HeadSection from "@/components/HeadSection";
-import getPlants from "@/libs/getCars";
-import { LinearProgress } from "@mui/material";
-import { revalidateTag } from "next/cache";
-import Link from "next/link";
-import { Suspense } from "react";
-import Footer from "@/components/Footer";
+"use client";
 
-export default async function Home() {
-  const plantsData = await getPlants();
-  revalidateTag("providers");
+import { useFarmData } from "@/libs/useFarmData";
 
-  // Construct CarJson object if getPlants returns an array
-  const carJson = {
-    success: true,
-    data: plantsData,
-  };
+export default function HomePage() {
+  const { data, togglePump } = useFarmData();
 
   return (
-    <main className="bg-white min-h-screen">
-      <HeadSection />
+    <>
+      <nav>
+        <div className="logo">
+          <img src="/2.jpeg" alt="Aqua Shield Logo" />
+        </div>
+        <div className="menu-items">
+          <a href="#">Home</a>
+          <a href="#">Control</a>
+          <a href="#">Charts</a>
+          <a href="#" style={{ color: "#b30000" }}>Log Out</a>
+        </div>
+      </nav>
 
-      <div className="py-10 white">
-        <Suspense
-          fallback={
-            <p>
-              Loading ... <LinearProgress />
-            </p>
-          }
-        >
-          <PlantCatalogMain carJson={carJson} />
-        </Suspense>
-      </div>
+      <div className="main-content">
+        <div className="status-container">
+          <div className="glass-card">
+            <i className="fas fa-tint icon-water"></i>
+            <div className="label">ความชื้นอากาศ</div>
+            <div className="value">
+              {data.hum !== null ? `${data.hum}%` : "--%"}
+            </div>
+          </div>
 
-      <div className="w-full h-[490px] bg-[#800000]"></div>
+          <div className="glass-card">
+            <i className="fas fa-thermometer-half icon-temp"></i>
+            <div className="label">อุณหภูมิ</div>
+            <div className="value">
+              {data.temp !== null ? `${data.temp}°C` : "--°C"}
+            </div>
+          </div>
 
-      <div className="text-center py-20 items-center bg-white">
-        <div className="w-full max-w-screen-xl mx-auto px-4 mb-6 flex justify-between items-center font-robotoMono">
-          <h2 className="text-black text-2xl  tracking-widest font-robotoMono">
-            PICK YOUR PROVIDER FOR NEW EXPERIENCE
-          </h2>
-          <div className="border-t border-black w-8 px-4 mr-auto"></div>
-          <Link
-            href="/provider"
-            className="text-black border border-black px-4 py-1 rounded-full text-sm hover:bg-black hover:text-white transition"
-          >
-            View all
-          </Link>
+          <div className="glass-card">
+            <i className="fas fa-sun icon-sun"></i>
+            <div className="label">ความเข้มแสง</div>
+            <div className="value">
+              {data.light !== null ? `${data.light} Lux` : "-- Lux"}
+            </div>
+          </div>
+
+          <div className="glass-card">
+            <i className="fas fa-seedling icon-soil"></i>
+            <div className="label">ความชื้นในดิน</div>
+            <div className="value">{data.soil ?? "--"}</div>
+          </div>
+
+          <div className="glass-card">
+            <i className="fas fa-cloud-showers-heavy icon-rain"></i>
+            <div className="label">เซนเซอร์น้ำฝน</div>
+            <div className="value">{data.rain ?? "--"}</div>
+          </div>
+
+          <div className="glass-card">
+            <i className="fas fa-glasses icon-uv"></i>
+            <div className="label">ดัชนี UV</div>
+            <div className="value">{data.uv ?? "--"}</div>
+          </div>
+
+          <div className="glass-card status-wide">
+            <i className="fas fa-exclamation-triangle icon-alert"></i>
+            <div className="label">สถานะระบบ</div>
+            <div
+              className={
+                "value " + (data.alertOn ? "status-bad" : "status-good")
+              }
+            >
+              {data.alertOn ? "แจ้งเตือน!" : "ปกติ"}
+            </div>
+          </div>
         </div>
 
-        <Suspense
-          fallback={
-            <p>
-              Loading ... <LinearProgress />
-            </p>
-          }
-        >
-        </Suspense>
+        <div className="control-zone">
+          <button className="ctrl-btn btn-water" onClick={togglePump}>
+            <i className="fas fa-tint"></i>
+            {data.pumpOn ? "หยุดรดน้ำ" : "สั่งรดน้ำ (Manual)"}
+          </button>
+        </div>
+
+        <div className="chart-header">สถิติย้อนหลัง (ThingSpeak)</div>
+
+        <div className="chart-container">
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/1?bgcolor=%23ffffff&color=%23795548&dynamic=true&results=60&type=line&update=15&title=Soil%20Moisture"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15&title=Temperature"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/6?bgcolor=%23ffffff&color=%233498db&dynamic=true&results=60&type=line&update=15&title=Humidity"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/2?bgcolor=%23ffffff&color=%239b59b6&dynamic=true&results=60&type=line&update=15&title=Rain%20Sensor"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/5?bgcolor=%23ffffff&color=%23f39c12&dynamic=true&results=60&type=line&update=15&title=Light%20Intensity"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div className="chart-card">
+            <iframe
+              src="https://thingspeak.com/channels/3183182/charts/3?bgcolor=%23ffffff&color=%23e67e22&dynamic=true&results=60&type=line&update=15&title=UV%20Index"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
       </div>
-    </main>
+    </>
   );
 }

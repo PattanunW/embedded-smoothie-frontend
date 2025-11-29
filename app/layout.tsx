@@ -1,41 +1,28 @@
-import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
-import TopMenu from "@/components/TopMenu";
-import { getServerSession } from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/authOptions"
-import NextAuthProvider from "@/providers/NextAuthProvider";
-import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
-
-const robotoMono = Roboto_Mono({
-  subsets: ["latin"],
-  variable: "--font-robotoMono"
-});
-
-export const metadata: Metadata = {
-  title: "ARM SPEED BUS",
-  description: "Car Renting Website",
+export const metadata = {
+  title: "Aqua Shield",
+  description: "Automated Irrigation & Sun Control",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const session = await getServerSession(authOptions)
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={robotoMono.className}>
-        <NextAuthProvider session={session}>
-        <TopMenu/>
-        <main className="pt-[10px]">
-          {children}
-        </main>
-        <Footer/>
-        </NextAuthProvider>
-        </body>
+    <html lang="th">
+      <head>
+        {/* ฟอนต์ Prompt */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap"
+          rel="stylesheet"
+        />
+
+        {/* Font Awesome 6.4.0 */}
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+      </head>
+
+      <body>{children}</body>
     </html>
   );
 }
