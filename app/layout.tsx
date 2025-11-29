@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Aqua Shield",
+  title: "Smart Farm Dashboard",
   description: "Automated Irrigation & Sun Control",
 };
 
