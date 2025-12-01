@@ -15,7 +15,6 @@ export default function HomePage() {
           <a href="#">Home</a>
           <a href="#">Control</a>
           <a href="#">Charts</a>
-          <a href="#" style={{ color: "#b30000" }}>Log Out</a>
         </div>
       </nav>
 
